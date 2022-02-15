@@ -1,0 +1,18 @@
+# Basic Makefile to pull in kernel's KBuild to build an out-of-tree
+# kernel module
+
+KDIR ?= /lib/modules/$$(uname -r)/build
+
+all: modules sha3-test
+
+sha3-test: sha3-test.c
+	gcc --std=c99 -Wall -O2 -pthread -o $@ $^ -lm
+
+modules:
+	$(MAKE) -C $(KDIR) M=$$PWD $@
+
+clean:
+	$(MAKE) -C $(KDIR) M=$$PWD $@
+	-rm sha3-test
+
+.PHONY: all modules clean
